@@ -7,7 +7,7 @@
  * POST /tasks/add - Creates a new task in the database.
  * PATCH /tasks/update/:id - Updates the task with the given id.
  * DELETE /tasks/del/:id - Deletes the task with the given id.
- * PATCH /tasks/complete/:id - Toggle the completion status of the task with the given id.
+ * PATCH /tasks/complete - Toggle the completion status of the task with the given id.
  */
 
 import express from "express";

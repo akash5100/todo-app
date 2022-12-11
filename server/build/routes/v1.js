@@ -20,9 +20,8 @@ exports.v1Routes = void 0;
  * GET /tasks/:id - Returns the task with the given id.
  * POST /tasks/add - Creates a new task in the database.
  * PATCH /tasks/update/:id - Updates the task with the given id.
- * DELETE /tasks/:id - Deletes the task with the given id.
+ * DELETE /tasks/del/:id - Deletes the task with the given id.
  * PATCH /tasks/complete/:id - Toggle the completion status of the task with the given id.
- *
  */
 const express_1 = __importDefault(require("express"));
 const database_1 = __importDefault(require("../database"));
@@ -46,7 +45,14 @@ router.get("/tasks", (req, res) => __awaiter(void 0, void 0, void 0, function* (
 }));
 // Add a new task
 router.post("/tasks/add", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, description } = req.query;
+    const { title, description } = req.body;
+    if (!title || !description) {
+        res.status(400).json({
+            message: "Bad request, missing title or description",
+        });
+        return;
+    }
+    // Also return the id of the newly created task
     const sql = `INSERT INTO task (title, description) VALUES (?, ?)`;
     const item = yield new Promise((resolve, reject) => {
         database_1.default.run(sql, [title, description], (err, row) => {
@@ -55,11 +61,20 @@ router.post("/tasks/add", (req, res) => __awaiter(void 0, void 0, void 0, functi
             resolve(row);
         });
     });
+    // Get the id of the newly created task
+    const id = yield new Promise((resolve, reject) => {
+        database_1.default.get("SELECT last_insert_rowid() as id", (err, row) => {
+            if (err)
+                reject(err);
+            resolve(row.id);
+        });
+    });
     res.json({
-        message: "Task added",
+        message: "success",
         data: {
-            title: title,
-            description: description
+            "id": id,
+            "title": title,
+            "description": description
         }
     });
 }));
@@ -83,7 +98,7 @@ router.get("/tasks/:id", (req, res) => __awaiter(void 0, void 0, void 0, functio
 // Update task with id
 router.patch("/tasks/update/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const { title, description } = req.query;
+    const { title, description } = req.body;
     const sql = `UPDATE task SET title = ?, description = ? WHERE id = ?`;
     const item = yield new Promise((resolve, reject) => {
         database_1.default.run(sql, [title, description, id], (err, row) => {
@@ -98,8 +113,8 @@ router.patch("/tasks/update/:id", (req, res) => __awaiter(void 0, void 0, void 0
     });
 }));
 // Toggle task completion
-router.patch("/tasks/complete/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
+router.patch("/tasks/complete", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.body;
     // Select the task with the given id and get the complete value
     let sql = `SELECT completed FROM task WHERE id = ?`;
     // Query the database to get the current value of the completed column
@@ -108,9 +123,13 @@ router.patch("/tasks/complete/:id", (req, res) => __awaiter(void 0, void 0, void
             if (err) {
                 reject(err);
             }
-            else {
-                resolve(row.completed);
+            // if we get row undefined, then the task with the given id does not exist
+            if (row === undefined) {
+                res.status(404).json({
+                    message: "Task not found",
+                });
             }
+            resolve(row.completed);
         });
     });
     // Toggle the completed value (1 if it was 0, 0 if it was 1)
@@ -124,7 +143,7 @@ router.patch("/tasks/complete/:id", (req, res) => __awaiter(void 0, void 0, void
             else {
                 resolve(res.json({
                     message: "success",
-                    data: newCompleted
+                    completed: newCompleted
                 }));
             }
         });
