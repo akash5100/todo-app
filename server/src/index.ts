@@ -2,14 +2,11 @@ import express, {Request, Response} from 'express';
 import { v1Routes } from './routes/v1';
 import { port } from "./constants";
 import cors from 'cors';
-import bodyParser from 'body-parser';
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 app.get('/', (req: Request, res: Response) => {

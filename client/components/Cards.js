@@ -21,16 +21,20 @@ const Cards = ({ title, description, id, completed }) => {
             })
             .then((response) => {
                 console.log(response);
+                setTitle(Title);
+                setDescription(Description);
+                setEditMode(false);
             });
-        setTitle(Title);
-        setDescription(Description);
-        setEditMode(false);
     };
 
     const handleComplete = async (id) => {
-        await axios.patch(`http://localhost:5000/v1/tasks/complete/${id}`).then((response) => {
-            console.log(response);
-        });
+        await axios
+            .patch(`http://localhost:5000/v1/tasks/complete`, {
+                id: id,
+            })
+            .then((response) => {
+                console.log(response);
+            });
     };
 
     return (
@@ -59,7 +63,7 @@ const Cards = ({ title, description, id, completed }) => {
                     </div>
                 ) : (
                     <div className="hidden absolute top-0 right-0 -translate-x-3 translate-y-3 group-hover:flex ">
-                        <div className=" rounded h-6 w-6 hover:border hover:border-blue-400 p-1 ">
+                        <div className="rounded h-6 w-6 hover:border hover:border-blue-400 p-1 ">
                             <CheckIcon
                                 className="object-contain"
                                 onClick={() => {
@@ -67,7 +71,7 @@ const Cards = ({ title, description, id, completed }) => {
                                 }}
                             />
                         </div>
-                        <div className=" rounded h-6 w-6 hover:border hover:border-blue-400 p-1 ">
+                        <div className="rounded h-6 w-6 hover:border hover:border-blue-400 p-1 ">
                             <PencilIcon
                                 className="object-contain"
                                 onClick={() => {

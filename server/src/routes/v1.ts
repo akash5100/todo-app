@@ -107,8 +107,9 @@ router.patch("/tasks/update/:id", async (req, res) => {
 });
 
 // Toggle task completion
-router.patch("/tasks/complete/:id", async (req, res) => {
-    const { id } = req.params;
+router.patch("/tasks/complete", async (req, res) => {    
+    const { id } = req.body;
+
     // Select the task with the given id and get the complete value
     let sql = `SELECT completed FROM task WHERE id = ?`;
 
@@ -123,8 +124,8 @@ router.patch("/tasks/complete/:id", async (req, res) => {
                 res.status(404).json({
                     message: "Task not found",
                 });
-                resolve(row.completed);
             }
+            resolve(row.completed);
         });
     });
 
@@ -140,7 +141,7 @@ router.patch("/tasks/complete/:id", async (req, res) => {
             resolve(
                 res.json({
                     message: "success",
-                    data: newCompleted
+                    completed: newCompleted
                 })
             );
         }
