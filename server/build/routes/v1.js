@@ -21,7 +21,7 @@ exports.v1Routes = void 0;
  * POST /tasks/add - Creates a new task in the database.
  * PATCH /tasks/update/:id - Updates the task with the given id.
  * DELETE /tasks/del/:id - Deletes the task with the given id.
- * PATCH /tasks/complete/:id - Toggle the completion status of the task with the given id.
+ * PATCH /tasks/complete - Toggle the completion status of the task with the given id.
  */
 const express_1 = __importDefault(require("express"));
 const database_1 = __importDefault(require("../database"));

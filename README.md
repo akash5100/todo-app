@@ -1,9 +1,21 @@
-# Run Server
-1. cd server
-2. npm install
-3. npm start
+# Build the project
 
-# Run Client
-1. cd client
-2. npm install
-3. npm start
+## you need to install the dependencies
+
+```bash
+cd server && npm install && cd ../client && npm install
+```
+
+## Build the project
+    
+```bash 
+npm run build
+```
+
+## Run the project
+
+```bash
+npm run start
+```
+
+# Docker
