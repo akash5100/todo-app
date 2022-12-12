@@ -50,6 +50,12 @@ npm run build
 ```bash
 npm run start
 ```
+## Run Tests
+For now, only the server tests are available.
+
+```bash
+cd server && npm run test
+```
 
 ## Run the Dockerfile
 
