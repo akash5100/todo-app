@@ -5,7 +5,7 @@ import { port } from './constants';
 const server = http.createServer(app);
 
 try {
-    app.listen(5000, () => {
+    app.listen(port, () => {
         console.log(`Server is running on http://localhost:${port}`);
     });
 }
